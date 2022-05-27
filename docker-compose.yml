@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./frontend
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    stdin_open: true
+
+  ngnix:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3000:80"
+
+  backend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./backend
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+    stdin_open: true
+
+# MYSQL이 이제는 도커 안에서 돌아가는게 아닌 AWS RDS를 이용할 것이므로 연결된 mysql Dockerfile을 지워준다.
+  mysql:
+    build: ./mysql
+    restart: unless-stopped
+    container_name: app_mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/mysql_data:/var/lib/mysql
+      - ./mysql/sqls/:/docker-entrypoint-initdb.d/
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: myapp
