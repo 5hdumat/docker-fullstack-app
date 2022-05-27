@@ -18,6 +18,6 @@ after_success:
 
   - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
 
-  - docker push 5hdumat/docker-frontend
-  - docker push 5hdumat/docker-backend
-  - docker push 5hdumat/nginx
+  - docker push 5hdumat/docker-frontend:0.0.1
+  - docker push 5hdumat/docker-backend:0.0.1
+  - docker push 5hdumat/nginx:0.0.1
