@@ -2,37 +2,37 @@ version: "3"
 
 services:
   frontend:
-    image: 5hdumat/docker-frontend
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./frontend
     volumes:
       - /app/node_modules
       - ./frontend:/app
     stdin_open: true
-    mem_limit: 128m
 
   ngnix:
     restart: always
-    image: 5hdumat/nginx
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
     ports:
-      - "80:80"
-    mem_limit: 128m
-    links:
-      - frontend
-      - backend
+      - "3000:80"
 
   backend:
-    image: 5hdumat/docker-backend
-    container_name: app_backend
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./backend
     volumes:
       - /app/node_modules
       - ./backend:/app
     stdin_open: true
     environment:
-      MYSQL_HOST: docker-fullstack-mysql.catzrjjvmwhb.ap-northeast-2.rds.amazonaws.com
+      MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: 5hdumatt
       MYSQL_DATABASE: myapp
       MYSQL_PORT: 3306
-    mem_limit: 128m
+
 
 # MYSQL이 이제는 도커 안에서 돌아가는게 아닌 AWS RDS를 이용할 것이므로 연결된 mysql Dockerfile을 지워준다.
 #  mysql:
